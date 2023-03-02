@@ -2,6 +2,7 @@ package com.jazzybruno.example.v1.controllers;
 
 import com.jazzybruno.example.v1.config.JwtUtils;
 import com.jazzybruno.example.v1.dao.UserDao;
+import com.jazzybruno.example.v1.dto.AuthenticateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
