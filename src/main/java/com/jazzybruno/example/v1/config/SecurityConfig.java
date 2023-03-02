@@ -1,5 +1,6 @@
 package com.jazzybruno.example.v1.config;
 
+import com.jazzybruno.example.v1.dao.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
