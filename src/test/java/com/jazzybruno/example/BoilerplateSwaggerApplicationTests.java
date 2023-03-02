@@ -1,4 +1,4 @@
-package rw.pacis_nkubito.boilerplateswagger;
+package com.jazzybruno.example;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
