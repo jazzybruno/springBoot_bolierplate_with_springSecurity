@@ -1,13 +1,19 @@
 package com.jazzybruno.example.v1.controllers;
 
 
+import com.jazzybruno.example.v1.dto.User.CreateUserDTO;
 import com.jazzybruno.example.v1.payload.ApiResponse;
+import com.jazzybruno.example.v1.serviceImpls.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserServiceImpl userService;
+    private final CreateUserDTO createUserDTO;
 
     @GetMapping
     public String getAllUser(){
