@@ -29,15 +29,12 @@ public class User {
     @NotNull
     private String national_id;
     @NotNull
-    private Role role;
-    @NotNull
     private String password;
 
-    public User(String email, String username, String national_id, Role role, String password) {
+    public User(String email, String username, String national_id, String password) {
         this.email = email;
         this.username = username;
         this.national_id = national_id;
-        this.role = role;
         this.password = password;
     }
 }
