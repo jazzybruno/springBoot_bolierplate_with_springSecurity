@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
 
@@ -11,6 +12,7 @@ import javax.management.relation.Role;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class CreateUserDTO {
     private Long userId;
     private String email;

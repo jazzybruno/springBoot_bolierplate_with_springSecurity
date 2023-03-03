@@ -1,7 +1,8 @@
 package com.jazzybruno.example.v1.dto.User;
 
+
 import org.springframework.stereotype.Component;
-import com.jazzybruno.example.v1.models.User
+import com.jazzybruno.example.v1.models.User;
 import java.util.function.Function;
 
 @Component

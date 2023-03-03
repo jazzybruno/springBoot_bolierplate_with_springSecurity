@@ -16,8 +16,8 @@ public class UserController {
     private final CreateUserDTO createUserDTO;
 
     @GetMapping
-    public String getAllUser(){
-        return "You should see all users at this page";
+    public ResponseEntity<ApiResponse> getAllUser() throws Exception{
+        return userService.getAllUsers();
     }
 
     @GetMapping("/id/{user_id}")
