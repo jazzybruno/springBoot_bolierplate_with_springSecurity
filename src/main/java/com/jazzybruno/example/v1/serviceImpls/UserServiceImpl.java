@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<ApiResponse> getAllUsers() throws Exception{
       try {
           List<User> users = userRepository.findAll();
-          return  ResponseEntity.status(500).body(new ApiResponse(
+          return  ResponseEntity.ok().body(new ApiResponse(
                   true,
                   "Successfully fetched the users",
                   users.stream().map(userDTOMapper).collect(Collectors.toList())
@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public ResponseEntity<ApiResponse> createUser(CreateUserDTO createUserDTO) throws Exception{
-         User user1 = userRepository.findUserByEmail(createUserDTO.getEmail()).get();
-         if(user1 == null){
+         Optional<User> user1 = userRepository.findUserByEmail(createUserDTO.getEmail());
+         if(!user1.isPresent()){
              User user = new User(
                      createUserDTO.getEmail(),
                      createUserDTO.getUsername(),
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
                  ));
              }
          }else{
-             return ResponseEntity.status(401).body(new ApiResponse(
+             return ResponseEntity.status(402).body(new ApiResponse(
                      false,
                      "The user with the email:" + createUserDTO.getEmail() + " already exists"
              ));

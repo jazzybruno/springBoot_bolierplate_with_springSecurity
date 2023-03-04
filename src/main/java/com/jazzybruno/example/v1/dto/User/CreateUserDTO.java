@@ -14,10 +14,8 @@ import javax.management.relation.Role;
 @AllArgsConstructor
 @Component
 public class CreateUserDTO {
-    private Long userId;
     private String email;
     private String username;
     private String national_id;
-    private Role role;
     private String password;
 }
