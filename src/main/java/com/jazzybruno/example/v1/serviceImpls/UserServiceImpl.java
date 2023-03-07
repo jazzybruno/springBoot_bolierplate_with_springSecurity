@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
                  ));
              }
          }else{
-             return ResponseEntity.status(402).body(new ApiResponse(
+             return ResponseEntity.status(404).body(new ApiResponse(
                      false,
                      "The user with the email:" + createUserDTO.getEmail() + " already exists"
              ));
