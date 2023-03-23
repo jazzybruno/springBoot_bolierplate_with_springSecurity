@@ -3,6 +3,7 @@ package com.jazzybruno.example.v1.controllers;
 import com.jazzybruno.example.v1.config.JwtUtils;
 import com.jazzybruno.example.v1.dao.UserDao;
 import com.jazzybruno.example.v1.dto.AuthenticateDTO;
+import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
 import com.jazzybruno.example.v1.models.User;
 import com.jazzybruno.example.v1.repositories.UserRepository;
 import com.jazzybruno.example.v1.utils.Hash;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
+
     private UserDao userDao;
     private JwtUtils jwtUtils;
     private final UserRepository userRepository;
@@ -47,8 +49,7 @@ public class AuthenticationController {
                         authenticateDTO.getPassword()
                 )
         );
-//        final UserDetails userDetails = (UserDetails) userRepository.findUserByEmail(authenticateDTO.getEmail()).get();
-        final User user =  userRepository.findUserByEmail(authenticateDTO.getEmail()).get();
+           final User user = userRepository.findUserByEmail(authenticateDTO.getEmail()).get();
         if(!hash.isTheSame(authenticateDTO.getPassword() , user.getPassword())){
             return ResponseEntity.badRequest().body("The passwords or email does not match");
         }

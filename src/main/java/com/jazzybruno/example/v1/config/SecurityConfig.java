@@ -1,6 +1,8 @@
 package com.jazzybruno.example.v1.config;
 
 import com.jazzybruno.example.v1.dao.UserDao;
+import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
+import com.jazzybruno.example.v1.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
-    private final UserDao userDao;
+    private final CustomUserDetails userDetails;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
@@ -49,8 +51,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-        // TODO: 2/24/2023 learn how to incrypt the password
-//        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
@@ -60,6 +60,6 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return email -> userDao.findUserByEmail(email);
+        return email -> userDetails.loadUserByUsername(email);
     }
 }
