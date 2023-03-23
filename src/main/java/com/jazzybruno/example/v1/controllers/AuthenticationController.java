@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,15 +26,15 @@ public class AuthenticationController {
 
     private UserDao userDao;
     private JwtUtils jwtUtils;
-    private final UserRepository userRepository;
+    private final CustomUserDetails userDetails;
     private Hash hash = new Hash();
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager , UserDao userDao, JwtUtils jwtUtils , UserRepository userRepository) {
+    public AuthenticationController(AuthenticationManager authenticationManager , UserDao userDao, JwtUtils jwtUtils ,CustomUserDetails userDetails) {
         this.userDao = userDao;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
+        this.userDetails = userDetails;
     }
 
     @PostMapping("/authenticate")
@@ -49,7 +50,7 @@ public class AuthenticationController {
                         authenticateDTO.getPassword()
                 )
         );
-           final User user = userRepository.findUserByEmail(authenticateDTO.getEmail()).get();
+           final UserDetails user = (UserDetails) userDetails.loadUserByUsername(authenticateDTO.getEmail());
         if(!hash.isTheSame(authenticateDTO.getPassword() , user.getPassword())){
             return ResponseEntity.badRequest().body("The passwords or email does not match");
         }
