@@ -94,7 +94,6 @@ public class UserServiceImpl implements UserService {
                      "The user with the email:" + createUserDTO.getEmail() + " already exists"
              ));
          }
-
     }
 
     public void updateUserMapper(Optional<User> user, CreateUserDTO createUserDTO){

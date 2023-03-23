@@ -22,8 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDao userDao;
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
@@ -51,9 +49,9 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
         // TODO: 2/24/2023 learn how to incrypt the password
-        return NoOpPasswordEncoder.getInstance();
+//        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean

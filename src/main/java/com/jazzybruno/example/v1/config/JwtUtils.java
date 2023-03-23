@@ -1,5 +1,6 @@
 package com.jazzybruno.example.v1.config;
 
+import com.jazzybruno.example.v1.models.User;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -43,15 +44,15 @@ public class JwtUtils {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(com.jazzybruno.example.v1.models.User user){
         Map<String , Object> claims = new HashMap<>();
-        return createToken(claims , userDetails);
+        return createToken(claims , user);
     }
 
-    public String createToken(Map<String , Object> claims , UserDetails userDetails){
+    public String createToken(Map<String , Object> claims , User user){
         return  Jwts.builder().setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .claim("authorities" , userDetails.getAuthorities())
+                .setSubject(user.getUsername())
+                .claim("authorities" , "admin")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)))
                 .signWith(SignatureAlgorithm.HS256 , jwtSecretKey).compact();
