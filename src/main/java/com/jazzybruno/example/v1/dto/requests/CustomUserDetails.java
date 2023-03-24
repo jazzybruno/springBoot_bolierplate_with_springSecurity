@@ -1,4 +1,4 @@
-package com.jazzybruno.example.v1.dto.User;
+package com.jazzybruno.example.v1.dto.requests;
 
 import com.jazzybruno.example.v1.models.User;
 import com.jazzybruno.example.v1.repositories.UserRepository;

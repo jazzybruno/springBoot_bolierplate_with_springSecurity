@@ -1,9 +1,8 @@
 package com.jazzybruno.example.v1.controllers;
 
 import com.jazzybruno.example.v1.security.jwt.JwtUtils;
-import com.jazzybruno.example.v1.dao.UserDao;
-import com.jazzybruno.example.v1.dto.UserLoginDTO;
-import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
+import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
+import com.jazzybruno.example.v1.dto.requests.CustomUserDetails;
 import com.jazzybruno.example.v1.utils.Hash;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 
-    private UserDao userDao;
     private JwtUtils jwtUtils;
     private final CustomUserDetails userDetails;
     private Hash hash = new Hash();
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager , UserDao userDao, JwtUtils jwtUtils ,CustomUserDetails userDetails) {
-        this.userDao = userDao;
+    public AuthenticationController(AuthenticationManager authenticationManager , JwtUtils jwtUtils ,CustomUserDetails userDetails) {
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
         this.userDetails = userDetails;

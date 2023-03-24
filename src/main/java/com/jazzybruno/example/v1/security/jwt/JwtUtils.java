@@ -1,7 +1,5 @@
 package com.jazzybruno.example.v1.security.jwt;
 
-import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
-import com.jazzybruno.example.v1.models.User;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 

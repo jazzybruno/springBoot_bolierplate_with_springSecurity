@@ -1,6 +1,6 @@
 package com.jazzybruno.example.v1.security.jwt;
 
-import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
+import com.jazzybruno.example.v1.dto.requests.CustomUserDetails;
 import com.jazzybruno.example.v1.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

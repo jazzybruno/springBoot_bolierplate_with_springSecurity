@@ -1,8 +1,8 @@
 package com.jazzybruno.example.v1.controllers;
 
 
-import com.jazzybruno.example.v1.dto.User.CreateUserDTO;
-import com.jazzybruno.example.v1.dto.UserLoginDTO;
+import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
+import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
 import com.jazzybruno.example.v1.payload.ApiResponse;
 import com.jazzybruno.example.v1.serviceImpls.UserServiceImpl;
 import lombok.RequiredArgsConstructor;

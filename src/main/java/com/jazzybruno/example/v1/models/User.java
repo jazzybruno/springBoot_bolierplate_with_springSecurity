@@ -27,7 +27,7 @@ public class User {
     private String username;
     @NotNull
     private String national_id;
-    @Column
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "role")

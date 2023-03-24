@@ -1,4 +1,4 @@
-package com.jazzybruno.example.v1.dto.User;
+package com.jazzybruno.example.v1.dto.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
