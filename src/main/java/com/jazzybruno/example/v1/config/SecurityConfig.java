@@ -1,8 +1,7 @@
 package com.jazzybruno.example.v1.config;
 
-import com.jazzybruno.example.v1.dao.UserDao;
 import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
-import com.jazzybruno.example.v1.repositories.UserRepository;
+import com.jazzybruno.example.v1.security.jwt.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,8 +27,8 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/secure/api/**").authenticated()
-                .anyRequest().permitAll()
+                .antMatchers("/*" , "/api/v1/user/create" , "/api/v1/user/login").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

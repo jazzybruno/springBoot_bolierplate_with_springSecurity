@@ -1,11 +1,9 @@
 package com.jazzybruno.example.v1.controllers;
 
-import com.jazzybruno.example.v1.config.JwtUtils;
+import com.jazzybruno.example.v1.security.jwt.JwtUtils;
 import com.jazzybruno.example.v1.dao.UserDao;
 import com.jazzybruno.example.v1.dto.AuthenticateDTO;
 import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
-import com.jazzybruno.example.v1.models.User;
-import com.jazzybruno.example.v1.repositories.UserRepository;
 import com.jazzybruno.example.v1.utils.Hash;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

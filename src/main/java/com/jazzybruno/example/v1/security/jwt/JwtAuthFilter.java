@@ -1,6 +1,7 @@
-package com.jazzybruno.example.v1.config;
+package com.jazzybruno.example.v1.security.jwt;
 
-import com.jazzybruno.example.v1.dao.UserDao;
+import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
+import com.jazzybruno.example.v1.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +21,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private final UserDao userDao;
+    private final CustomUserDetails userDetails1;
     private final JwtUtils jwtUtils;
+
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -37,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwtToken = authHeader.substring(7);
         userEmail= jwtUtils.extractUsername(jwtToken);
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userDao.findUserByEmail(userEmail);
+            UserDetails userDetails = userDetails1.loadUserByUsername(userEmail);
             if(jwtUtils.isTokenValid(jwtToken , userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails , null , userDetails.getAuthorities()
