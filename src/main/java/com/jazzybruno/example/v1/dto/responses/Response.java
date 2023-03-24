@@ -1,5 +1,6 @@
 package com.jazzybruno.example.v1.dto.responses;
 
+import com.jazzybruno.example.v1.enums.ResponseType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
