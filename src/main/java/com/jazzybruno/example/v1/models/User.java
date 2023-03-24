@@ -6,15 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.hibernate.annotations.LazyToOne;
 
-import javax.management.relation.Role;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
@@ -28,6 +27,12 @@ public class User {
     private String username;
     @NotNull
     private String national_id;
+    @Column
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "role")
+    private Role role;
+
     @NotNull
     private String password;
 
