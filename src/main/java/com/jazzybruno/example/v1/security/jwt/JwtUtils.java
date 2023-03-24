@@ -3,6 +3,7 @@ package com.jazzybruno.example.v1.security.jwt;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Calendar;
 import java.util.Date;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -49,6 +50,9 @@ public class JwtUtils {
     }
 
         public String createToken(Map<String , Object> claims , UserDetails user){
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE , 5);
+
         return  Jwts.builder().setClaims(claims)
                 .setSubject(user.getUsername())
                 .claim("authorities" , "admin")

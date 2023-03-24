@@ -3,8 +3,10 @@
 import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
 import com.jazzybruno.example.v1.dto.responses.UserDTOMapper;
 import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
+import com.jazzybruno.example.v1.models.Role;
 import com.jazzybruno.example.v1.models.User;
 import com.jazzybruno.example.v1.payload.ApiResponse;
+import com.jazzybruno.example.v1.repositories.RoleRepository;
 import com.jazzybruno.example.v1.repositories.UserRepository;
 import com.jazzybruno.example.v1.services.UserService;
 import com.jazzybruno.example.v1.utils.Hash;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserDTOMapper userDTOMapper;
+    private final RoleRepository roleRepository;
 
     public ResponseEntity<ApiResponse> getAllUsers() throws Exception{
       try {
@@ -74,6 +78,10 @@ public class UserServiceImpl implements UserService {
                      createUserDTO.getPassword()
              );
 
+             Long id = 4l;
+             Optional<Role> roleOptional = roleRepository.findById(id);
+             user.setRole(roleOptional.get());
+
              Hash hash = new Hash();
              user.setPassword(hash.hashPassword(user.getPassword()));
              try {
@@ -83,7 +91,7 @@ public class UserServiceImpl implements UserService {
                          "Successfully saved the user",
                          user
                  ));
-             }catch (Exception e){
+             }catch (HttpServerErrorException.InternalServerError e){
                  return ResponseEntity.status(500).body(new ApiResponse(
                          false,
                          "Failed to create the user"
