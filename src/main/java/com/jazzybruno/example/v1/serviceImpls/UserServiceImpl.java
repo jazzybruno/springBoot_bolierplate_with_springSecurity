@@ -2,6 +2,7 @@
 
 import com.jazzybruno.example.v1.dto.User.CreateUserDTO;
 import com.jazzybruno.example.v1.dto.User.UserDTOMapper;
+import com.jazzybruno.example.v1.dto.UserLoginDTO;
 import com.jazzybruno.example.v1.models.User;
 import com.jazzybruno.example.v1.payload.ApiResponse;
 import com.jazzybruno.example.v1.repositories.UserRepository;
@@ -136,5 +137,10 @@ public class UserServiceImpl implements UserService {
                     "The user with the id:" + user_id + " does not exist"
             ));
         }
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> authenticateUser(UserLoginDTO userLoginDTO) throws Exception {
+        return null;
     }
 }

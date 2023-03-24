@@ -2,7 +2,7 @@ package com.jazzybruno.example.v1.controllers;
 
 import com.jazzybruno.example.v1.security.jwt.JwtUtils;
 import com.jazzybruno.example.v1.dao.UserDao;
-import com.jazzybruno.example.v1.dto.AuthenticateDTO;
+import com.jazzybruno.example.v1.dto.UserLoginDTO;
 import com.jazzybruno.example.v1.dto.User.CustomUserDetails;
 import com.jazzybruno.example.v1.utils.Hash;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(
-            @RequestBody AuthenticateDTO authenticateDTO
+            @RequestBody UserLoginDTO authenticateDTO
     ){
         if(authenticateDTO.getEmail() == null || authenticateDTO.getPassword() == null){
             return ResponseEntity.badRequest().body("PLEASE INPUT VALID EMAIL AND PASSWORD");
