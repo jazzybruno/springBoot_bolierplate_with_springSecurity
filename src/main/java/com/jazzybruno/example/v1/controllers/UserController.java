@@ -3,6 +3,7 @@ package com.jazzybruno.example.v1.controllers;
 
 import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
 import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
+import com.jazzybruno.example.v1.exceptions.LoginFailedException;
 import com.jazzybruno.example.v1.payload.ApiResponse;
 import com.jazzybruno.example.v1.serviceImpls.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -42,13 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> authenticateUser(@RequestBody UserLoginDTO userLoginDTO) throws Exception{
-        try {
-            String token =  userService.authenticateUser(userLoginDTO);
-            return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
-        }catch (BadCredentialsException e){
-            return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login"));
-        }
+    public ResponseEntity<ApiResponse> authenticateUser(@RequestBody UserLoginDTO userLoginDTO) throws BadCredentialsException , LoginFailedException {
+        return userService.authenticateUser(userLoginDTO);
     }
-
 }

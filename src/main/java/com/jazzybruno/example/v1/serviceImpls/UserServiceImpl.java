@@ -160,14 +160,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String authenticateUser(UserLoginDTO userLoginDTO) throws Exception {
+    public ResponseEntity<ApiResponse> authenticateUser(UserLoginDTO userLoginDTO) throws BadCredentialsException , LoginFailedException{
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
             );
         } catch (BadCredentialsException e) {
             e.printStackTrace();
-            throw new LoginFailedException("Incorrect Username or Password");
+            return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
         }
 
         UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
@@ -178,6 +178,7 @@ public class UserServiceImpl implements UserService {
         String role = userAuthority.getAuthority();
 
         // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
-        return jwtUtils.createToken(userId , userLoginDTO.getEmail() , role);
+        String token = jwtUtils.createToken(userId , userLoginDTO.getEmail() , role);
+        return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
         }
 }
