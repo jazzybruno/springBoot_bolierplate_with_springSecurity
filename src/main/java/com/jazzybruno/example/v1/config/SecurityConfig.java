@@ -27,8 +27,8 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/*" , "/v2/*" , "/api/v1/users/create" , "/api/v1/users/login").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/auth/**").authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -37,7 +37,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter , UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         final DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();

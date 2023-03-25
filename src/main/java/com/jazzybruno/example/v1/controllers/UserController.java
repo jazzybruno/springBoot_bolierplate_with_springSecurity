@@ -23,15 +23,15 @@ public class UserController {
     public ResponseEntity<ApiResponse> getAllUser() throws Exception{
         return userService.getAllUsers();
     }
-    @GetMapping("/id/{user_id}")
+    @GetMapping("auth/id/{user_id}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long user_id) throws Exception{
         return userService.getUserById(user_id);
     }
-    @PutMapping("/update/{user_id}")
+    @PutMapping("auth/update/{user_id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long user_id , @RequestBody CreateUserDTO createUserDTO) throws Exception{
         return userService.updateUser(user_id , createUserDTO);
     }
-    @DeleteMapping("/delete/{user_id}")
+    @DeleteMapping("auth/delete/{user_id}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long user_id) throws Exception{
         return userService.deleteUser(user_id);
     }

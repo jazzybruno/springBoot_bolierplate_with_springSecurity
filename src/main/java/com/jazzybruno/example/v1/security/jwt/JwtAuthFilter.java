@@ -28,15 +28,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
+
             final String authHeader = request.getHeader(AUTHORIZATION);
             final String userEmail;
             final String jwtToken;
 
             if(authHeader == null || !authHeader.startsWith("Bearer")){
                 filterChain.doFilter(request , response);
-                throw new RuntimeException("No Token is present");
-//                return;
+                return;
             }
 
             jwtToken = authHeader.substring(7);
@@ -53,11 +52,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request , response);
-        }catch (RuntimeException e){
-            e.printStackTrace();
-            System.out.println(e.getCause());
-            System.out.println(e.getMessage());
-            throw new RuntimeException("Something went wrong");
-        }
+
     }
 }
