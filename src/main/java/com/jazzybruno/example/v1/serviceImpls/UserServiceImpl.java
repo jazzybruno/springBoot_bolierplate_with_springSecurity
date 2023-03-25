@@ -9,6 +9,7 @@ import com.jazzybruno.example.v1.models.User;
 import com.jazzybruno.example.v1.payload.ApiResponse;
 import com.jazzybruno.example.v1.repositories.RoleRepository;
 import com.jazzybruno.example.v1.repositories.UserRepository;
+import com.jazzybruno.example.v1.security.jwt.JwtUtils;
 import com.jazzybruno.example.v1.security.user.UserAuthority;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetails;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetailsService;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
     private final UserSecurityDetailsService userSecurityDetailsService;
+    private final JwtUtils jwtUtils;
 
     public ResponseEntity<ApiResponse> getAllUsers() throws Exception{
       try {
@@ -159,14 +161,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String authenticateUser(UserLoginDTO userLoginDTO) throws Exception {
-       try {
-           authenticationManager.authenticate(
-                   new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail() , userLoginDTO.getPassword())
-           );
-       }catch (BadCredentialsException e){
-        e.printStackTrace();
-        throw new LoginFailedException("Incorrect Username or Password");
-       }
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
+            );
+        } catch (BadCredentialsException e) {
+            e.printStackTrace();
+            throw new LoginFailedException("Incorrect Username or Password");
+        }
 
         UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
         List<GrantedAuthority> grantedAuthorities = userSecurityDetails.grantedAuthorities;
@@ -174,5 +176,8 @@ public class UserServiceImpl implements UserService {
         String email = userSecurityDetails.getUsername();
         Long userId = userAuthority.getUserId();
         String role = userAuthority.getAuthority();
-    }
+
+        // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
+        return jwtUtils.createToken(userId , userLoginDTO.getEmail() , role);
+        }
 }

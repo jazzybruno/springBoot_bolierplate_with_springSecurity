@@ -17,8 +17,9 @@ public class UserSecurityDetails implements UserDetails {
     public UserSecurityDetails(User user){
         this.username = user.getEmail();
         this.password = user.getPassword();
-        ArrayList<GrantedAuthority> grantedAuthorities1 =new ArrayList<>();
-        grantedAuthorities1.add(new UserAuthority(user.getUser_id() , user.getNational_id()));
+        ArrayList<GrantedAuthority> grantedAuthorities1 = new ArrayList<>();
+        grantedAuthorities1.add(new UserAuthority(user.getUser_id() , user.getRole().roleName));
+        grantedAuthorities = grantedAuthorities1;
     }
 
     public List<GrantedAuthority> getGrantedAuthorities() {

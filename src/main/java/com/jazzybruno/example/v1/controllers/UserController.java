@@ -7,7 +7,9 @@ import com.jazzybruno.example.v1.payload.ApiResponse;
 import com.jazzybruno.example.v1.serviceImpls.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -39,9 +41,14 @@ public class UserController {
         return userService.createUser(createUserDTO);
     }
 
+    @PostMapping("/login")
     public ResponseEntity<ApiResponse> authenticateUser(@RequestBody UserLoginDTO userLoginDTO) throws Exception{
-        String token =  userService.authenticateUser(userLoginDTO);
-        return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
+        try {
+            String token =  userService.authenticateUser(userLoginDTO);
+            return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
+        }catch (BadCredentialsException e){
+            return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login"));
+        }
     }
 
 }

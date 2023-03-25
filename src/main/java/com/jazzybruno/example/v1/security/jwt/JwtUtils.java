@@ -17,6 +17,9 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
     private String jwtSecretKey = "secret@OK";
+    private static final String CLAIM_KEY_USER_ID = "userId";
+    private static final String CLAIM_KEY_EMAIL = "email";
+    private static final String CLAIM_KEY_ROLE = "role";
 
     public String extractUsername(String token){
         return extractClaim(token , Claims::getSubject);
@@ -44,20 +47,17 @@ public class JwtUtils {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails user){
-        Map<String , Object> claims = new HashMap<>();
-        return createToken(claims , user);
-    }
+        public String createToken(Long userId , String email , String role){
 
-        public String createToken(Map<String , Object> claims , UserDetails user){
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DATE , 5);
 
-        return  Jwts.builder().setClaims(claims)
-                .setSubject(user.getUsername())
-                .claim("authorities" , "admin")
+        return  Jwts.builder()
+                .claim(CLAIM_KEY_USER_ID , userId)
+                .claim(CLAIM_KEY_EMAIL , email)
+                .claim(CLAIM_KEY_ROLE , role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)))
+                .setExpiration(calendar.getTime())
                 .signWith(SignatureAlgorithm.HS256 , jwtSecretKey).compact();
     }
 
