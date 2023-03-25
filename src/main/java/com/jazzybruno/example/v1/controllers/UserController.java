@@ -40,7 +40,8 @@ public class UserController {
     }
 
     public ResponseEntity<ApiResponse> authenticateUser(@RequestBody UserLoginDTO userLoginDTO) throws Exception{
-        return userService.authenticateUser(userLoginDTO);
+        String token =  userService.authenticateUser(userLoginDTO);
+        return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
     }
 
 }

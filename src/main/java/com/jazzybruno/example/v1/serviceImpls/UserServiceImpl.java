@@ -3,15 +3,23 @@
 import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
 import com.jazzybruno.example.v1.dto.responses.UserDTOMapper;
 import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
+import com.jazzybruno.example.v1.exceptions.LoginFailedException;
 import com.jazzybruno.example.v1.models.Role;
 import com.jazzybruno.example.v1.models.User;
 import com.jazzybruno.example.v1.payload.ApiResponse;
 import com.jazzybruno.example.v1.repositories.RoleRepository;
 import com.jazzybruno.example.v1.repositories.UserRepository;
+import com.jazzybruno.example.v1.security.user.UserAuthority;
+import com.jazzybruno.example.v1.security.user.UserSecurityDetails;
+import com.jazzybruno.example.v1.security.user.UserSecurityDetailsService;
 import com.jazzybruno.example.v1.services.UserService;
 import com.jazzybruno.example.v1.utils.Hash;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +36,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserDTOMapper userDTOMapper;
     private final RoleRepository roleRepository;
+    private final AuthenticationManager authenticationManager;
+    private final UserSecurityDetailsService userSecurityDetailsService;
 
     public ResponseEntity<ApiResponse> getAllUsers() throws Exception{
       try {
@@ -148,7 +158,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> authenticateUser(UserLoginDTO userLoginDTO) throws Exception {
-        return null;
+    public String authenticateUser(UserLoginDTO userLoginDTO) throws Exception {
+       try {
+           authenticationManager.authenticate(
+                   new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail() , userLoginDTO.getPassword())
+           );
+       }catch (BadCredentialsException e){
+        e.printStackTrace();
+        throw new LoginFailedException("Incorrect Username or Password");
+       }
+
+        UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
+        List<GrantedAuthority> grantedAuthorities = userSecurityDetails.grantedAuthorities;
+        UserAuthority userAuthority = (UserAuthority) grantedAuthorities.get(0);
+        String email = userSecurityDetails.getUsername();
+        Long userId = userAuthority.getUserId();
+        String role = userAuthority.getAuthority();
     }
 }
