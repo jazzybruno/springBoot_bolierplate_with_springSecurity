@@ -13,11 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Service
 @Component
 public class UserSecurityDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
-    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
         if(userOptional.isPresent()){

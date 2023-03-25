@@ -1,5 +1,7 @@
 package com.jazzybruno.example.v1.security.jwt;
 
+import com.jazzybruno.example.v1.exceptions.JWTVerificationException;
+import com.jazzybruno.example.v1.security.user.UserSecurityDetails;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -61,8 +63,20 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS256 , jwtSecretKey).compact();
     }
 
-    public Boolean isTokenValid(String token , UserDetails userDetails){
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public JwtUserInfo decodeToken(String token) throws JWTVerificationException {
+        Claims claims = extractAllClaims(token);
+//        Long userId = (Long) claims.get(CLAIM_KEY_USER_ID);
+        String email = (String) claims.get(CLAIM_KEY_EMAIL);
+        String role = (String) claims.get(CLAIM_KEY_ROLE);
+        return new JwtUserInfo().setEmail(email)
+                .setRole(role);
+//                .setUserId(userId);
+    }
+
+    public Boolean isTokenValid(String token , UserSecurityDetails userSecurityDetails){
+        Claims claims = extractAllClaims(token);
+        String email = (String) claims.get(CLAIM_KEY_EMAIL);
+        final String username = email;
+        return (username.equals(userSecurityDetails.getUsername()) && !isTokenExpired(token));
     }
 }

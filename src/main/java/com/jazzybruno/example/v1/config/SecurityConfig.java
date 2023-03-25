@@ -1,8 +1,6 @@
 package com.jazzybruno.example.v1.config;
 
-import com.jazzybruno.example.v1.dto.requests.CustomUserDetails;
 import com.jazzybruno.example.v1.security.jwt.JwtAuthFilter;
-import com.jazzybruno.example.v1.security.user.UserSecurityDetails;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,13 +22,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserSecurityDetailsService userSecurityDetailsService;
-    private final CustomUserDetails userDetails;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/*" , "/api/v2/api-docs" , "/api/v1/users/create" , "/api/v1/users/login").permitAll()
+                .antMatchers("/*" , "/v2/*" , "/api/v1/users/create" , "/api/v1/users/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
@@ -44,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         final DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userSecurityDetailsService);
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
@@ -57,5 +54,10 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return userSecurityDetailsService::loadUserByUsername;
     }
 }

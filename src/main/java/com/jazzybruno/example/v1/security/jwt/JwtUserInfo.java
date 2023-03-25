@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class JwtUserInfo {
-    private Integer integer;
+    private Long userId;
     private String email;
     private String role;
 
