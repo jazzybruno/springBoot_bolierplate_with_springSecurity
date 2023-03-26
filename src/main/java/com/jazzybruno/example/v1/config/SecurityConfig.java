@@ -27,15 +27,26 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/auth/**").authenticated()
-                .anyRequest().permitAll()
+                .antMatchers(
+                        "/api/v1/users/login",
+                        "/api/v1/users/create"
+                ).permitAll()
+                .antMatchers(
+                        "/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**"
+                ).permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter , UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+        return  (SecurityFilterChain) http.build();
     }
     @Bean
     public AuthenticationProvider authenticationProvider() {
