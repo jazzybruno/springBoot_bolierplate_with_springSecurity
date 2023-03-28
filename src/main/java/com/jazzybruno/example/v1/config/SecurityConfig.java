@@ -4,6 +4,7 @@ import com.jazzybruno.example.v1.security.jwt.JwtAuthFilter;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,10 +28,8 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(
-                        "/api/v1/users/login",
-                        "/api/v1/users/create"
-                ).permitAll()
+                .antMatchers(HttpMethod.POST,  "/api/v1/users/login")
+                .permitAll()
                 .antMatchers(
                         "/v2/api-docs",
                         "/configuration/ui",
