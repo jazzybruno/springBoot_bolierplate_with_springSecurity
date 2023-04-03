@@ -37,7 +37,7 @@ public class SecurityConfig {
                         "/configuration/security",
                         "/swagger-ui.html",
                         "/webjars/**"
-                ).permitAll()
+                ).permitAll() // the above are the endpoints to the swagger documentation
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

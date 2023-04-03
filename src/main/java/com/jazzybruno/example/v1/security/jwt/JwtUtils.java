@@ -47,9 +47,7 @@ public class JwtUtils {
 
     public Boolean isTokenExpired(String token){
         Date expirationDate = extractExpiration(token);
-        System.out.println("The expiration date is: " + expirationDate);
         Date currentTime  = new Date(System.currentTimeMillis());
-        System.out.println("The current time is : " + currentTime);
         if(currentTime.before(expirationDate)){
             return false;
         }else{
@@ -60,7 +58,7 @@ public class JwtUtils {
         public String createToken(Long userId , String email , String role){
 
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE , 5);
+            calendar.add(Calendar.DATE , 1);
 
         return  Jwts.builder()
                 .claim(CLAIM_KEY_USER_ID , userId)

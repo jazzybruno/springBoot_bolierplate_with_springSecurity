@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.LazyToOne;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -33,6 +34,9 @@ public class User {
     @JoinColumn(name = "role")
     private Role role;
 
+    @Column
+    @NotNull
+    private Date lastLogin;
     @NotNull
     private String password;
 

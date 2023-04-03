@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -97,6 +98,7 @@ public class UserServiceImpl implements UserService {
 
              Hash hash = new Hash();
              user.setPassword(hash.hashPassword(user.getPassword()));
+             user.setLastLogin(null);
              try {
                  userRepository.save(user);
                  return ResponseEntity.ok().body(new ApiResponse(
@@ -174,6 +176,10 @@ public class UserServiceImpl implements UserService {
                     String email = userSecurityDetails.getUsername();
                     Long userId = userAuthority.getUserId();
                     String role = userAuthority.getAuthority();
+                    //updating the last login information
+                    User userObject = user.get();
+                    userObject.setLastLogin(new Date());
+                    userRepository.save(userObject);
                     // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
                     String token = jwtUtils.createToken(user.get().getUser_id(), userLoginDTO.getEmail() , role);
                     return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , new LoginResponse(token , user.map(userDTOMapper).get())));
