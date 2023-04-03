@@ -170,7 +170,6 @@ public class UserServiceImpl implements UserService {
                     // do the login stuff as usual
                     UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
                     List<GrantedAuthority> grantedAuthorities = userSecurityDetails.grantedAuthorities;
-                    System.out.println("The granted authorities: "  +  grantedAuthorities.get(0));
                     UserAuthority userAuthority = (UserAuthority) grantedAuthorities.get(0);
                     String email = userSecurityDetails.getUsername();
                     Long userId = userAuthority.getUserId();

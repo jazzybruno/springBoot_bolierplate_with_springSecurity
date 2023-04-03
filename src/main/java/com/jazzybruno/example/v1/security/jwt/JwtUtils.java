@@ -65,12 +65,12 @@ public class JwtUtils {
 
     public JwtUserInfo decodeToken(String token) throws JWTVerificationException {
         Claims claims = extractAllClaims(token);
-        Long userId = ((long) claims.get(CLAIM_KEY_USER_ID));
+        Long userId = (long) ( (int) claims.get(CLAIM_KEY_USER_ID));
         String email = (String) claims.get(CLAIM_KEY_EMAIL);
         String role = (String) claims.get(CLAIM_KEY_ROLE);
         return new JwtUserInfo().setEmail(email)
-                .setRole(role);
-//                .setUserId(userId);
+                .setRole(role)
+                .setUserId(userId);
     }
 
     public Boolean isTokenValid(String token , UserSecurityDetails userSecurityDetails){

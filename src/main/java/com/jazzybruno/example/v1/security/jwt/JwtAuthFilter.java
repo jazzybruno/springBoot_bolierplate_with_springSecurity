@@ -58,20 +58,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
 
-        System.out.println( jwtUserInfo.getEmail());
-        System.out.println(jwtUserInfo.getUserId());
-        System.out.println(jwtUserInfo.getRole());
-
             if(jwtUserInfo.getEmail() != null && SecurityContextHolder.getContext().getAuthentication() == null){
                 UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(jwtUserInfo.getEmail());
-                System.out.println(userSecurityDetails.getAuthorities());
-                System.out.println(userSecurityDetails.getGrantedAuthorities());
+
                 if(jwtUtils.isTokenValid(jwtToken , userSecurityDetails)){
+                    System.out.println("I have reached the username anf password authentication filter");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userSecurityDetails , null , userSecurityDetails.getAuthorities()
+                            userSecurityDetails , jwtToken , userSecurityDetails.getGrantedAuthorities()
                     );
+                    System.out.println("I have exited the username anf password authentication filter");
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                }else{
+                    System.out.println("The jwt token is not valid!!!");
                 }
             }
             filterChain.doFilter(request , response);
