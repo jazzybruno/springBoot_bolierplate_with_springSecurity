@@ -162,11 +162,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<ApiResponse> authenticateUser(UserLoginDTO userLoginDTO) throws BadCredentialsException , LoginFailedException{
         try {
-            System.out.println("I have reached here mf");
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
-            );
-            System.out.println("I have reached here mf");
+            Optional<User> user = userRepository.findUserByEmail(userLoginDTO.getEmail());
+            if(user.isPresent()){
+                Hash hash = new Hash();
+                if(hash.isTheSame(userLoginDTO.getPassword() , user.get().getPassword())){
+
+                    // do the login stuff as usual
+                    }else{
+                    return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
+                }
+            }else{
+                return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
+            }
             UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
             List<GrantedAuthority> grantedAuthorities = userSecurityDetails.grantedAuthorities;
             System.out.println("The granted authorities: "  +  grantedAuthorities.get(0));

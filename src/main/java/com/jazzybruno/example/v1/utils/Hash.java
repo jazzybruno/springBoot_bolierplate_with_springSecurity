@@ -8,7 +8,8 @@ public class Hash {
     public String hashPassword(String password){
         return bCryptPasswordEncoder.encode(password);
     }
-    public boolean isTheSame(String password , String savedPassword){
-        return bCryptPasswordEncoder.matches(password , savedPassword);
+    public boolean isTheSame(String rawPassword , String savedPassword){
+        return bCryptPasswordEncoder.matches(rawPassword , savedPassword);
     }
+
 }

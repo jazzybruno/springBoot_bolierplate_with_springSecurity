@@ -6,6 +6,6 @@ public class JWTVerificationException extends RuntimeException {
     }
 
     public JWTVerificationException(String message, Throwable cause) {
-        super(message, cause);
+            super(message, cause);
     }
 }
