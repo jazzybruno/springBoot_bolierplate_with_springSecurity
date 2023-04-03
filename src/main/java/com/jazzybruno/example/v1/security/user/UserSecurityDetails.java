@@ -11,14 +11,16 @@ import java.util.List;
 public class UserSecurityDetails implements UserDetails {
     public String username;
     public String password;
-    public List<GrantedAuthority> grantedAuthorities;
+    public List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
     public UserSecurityDetails(User user){
         this.username = user.getEmail();
         this.password = user.getPassword();
         ArrayList<GrantedAuthority> grantedAuthorities1 = new ArrayList<>();
-        grantedAuthorities1.add(new UserAuthority(user.getUser_id() , user.getRole().roleName));
-        grantedAuthorities = grantedAuthorities1;
+//        grantedAuthorities1.add();
+        UserAuthority userAuthority = new UserAuthority(user.getUser_id() ,  user.getRole().roleName);
+        System.out.println(userAuthority);
+        grantedAuthorities.add(userAuthority);
     }
 
     public List<GrantedAuthority> getGrantedAuthorities() {

@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST,  "/api/v1/users/login")
+                .antMatchers(HttpMethod.POST,  "/api/v1/users/login" , "/api/v1/users/create")
                 .permitAll()
                 .antMatchers(
                         "/v2/api-docs",
@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter , UsernamePasswordAuthenticationFilter.class);
-        return  (SecurityFilterChain) http.build();
+        return   http.build();
     }
     @Bean
     public AuthenticationProvider authenticationProvider() {

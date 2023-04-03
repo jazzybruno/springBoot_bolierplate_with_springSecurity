@@ -12,7 +12,7 @@ import java.util.List;
 public class TokenException extends Exception{
     private final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
 
-    TokenException(String message){
+    public TokenException(String message){
         super(message);
     }
 

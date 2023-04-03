@@ -1,5 +1,7 @@
 package com.jazzybruno.example.v1.security.jwt;
 
+import com.jazzybruno.example.v1.exceptions.JWTVerificationException;
+import com.jazzybruno.example.v1.exceptions.TokenException;
 import com.jazzybruno.example.v1.repositories.UserRepository;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetails;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetailsService;
@@ -24,16 +26,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserSecurityDetailsService userSecurityDetailsService;
     private final JwtUtils jwtUtils;
 
-    private final UserRepository userRepository;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
             final String authHeader = request.getHeader("Authorization");
-            final String userEmail;
-            final String jwtToken;
-
-        System.out.println(authHeader);
+             JwtUserInfo jwtUserInfo = null;
+             String jwtToken = null;
 
             if(authHeader == null || !authHeader.startsWith("Bearer")){
                 filterChain.doFilter(request , response);
@@ -41,11 +38,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
             jwtToken = authHeader.substring(7);
-            JwtUserInfo jwtUserInfo = jwtUtils.decodeToken(jwtToken);
-            userEmail= jwtUserInfo.getEmail();
 
-//            System.out.println(jwtToken);
-//            System.out.println(userEmail);
+            try {
+                jwtUserInfo = jwtUtils.decodeToken(jwtToken);
+            }catch (JWTVerificationException e){
+                TokenException exception =new TokenException(e.getMessage());
+
+            }
+
 
             if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
                 UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userEmail);
