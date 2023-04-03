@@ -65,7 +65,7 @@ public class JwtUtils {
 
     public JwtUserInfo decodeToken(String token) throws JWTVerificationException {
         Claims claims = extractAllClaims(token);
-//        Long userId = (Long) claims.get(CLAIM_KEY_USER_ID);
+        Long userId = ((long) claims.get(CLAIM_KEY_USER_ID));
         String email = (String) claims.get(CLAIM_KEY_EMAIL);
         String role = (String) claims.get(CLAIM_KEY_ROLE);
         return new JwtUserInfo().setEmail(email)

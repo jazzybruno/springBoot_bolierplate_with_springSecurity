@@ -1,5 +1,6 @@
 package com.jazzybruno.example.v1.security.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jazzybruno.example.v1.exceptions.JWTVerificationException;
 import com.jazzybruno.example.v1.exceptions.TokenException;
 import com.jazzybruno.example.v1.repositories.UserRepository;
@@ -44,11 +45,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }catch (JWTVerificationException e){
                 TokenException exception =new TokenException(e.getMessage());
 
+                // the repsonse type and status
+                response.setStatus(exception.getResponseEntity().getStatusCodeValue());
+                response.setContentType("application/json");
+
+                // set a new response object as a json one
+                ObjectMapper objectMapper = new ObjectMapper();
+                response.getWriter().write(objectMapper.writeValueAsString(exception.getResponseEntity().getBody()));
+
+                // exit the filter chain
+                filterChain.doFilter(request , response);
+                return;
             }
 
+        System.out.println( jwtUserInfo.getEmail());
+        System.out.println(jwtUserInfo.getUserId());
+        System.out.println(jwtUserInfo.getRole());
 
-            if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userEmail);
+            if(jwtUserInfo.getEmail() != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(jwtUserInfo.getEmail());
                 System.out.println(userSecurityDetails.getAuthorities());
                 System.out.println(userSecurityDetails.getGrantedAuthorities());
                 if(jwtUtils.isTokenValid(jwtToken , userSecurityDetails)){

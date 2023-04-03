@@ -16,7 +16,7 @@ public class TokenException extends Exception{
         super(message);
     }
 
-    ResponseEntity<Response> getResponseEntity(){
+    public ResponseEntity<Response> getResponseEntity() {
         List<String> details = new ArrayList<>();
         details.add(super.getMessage());
         ErrorResponse errorResponse = new ErrorResponse().setMessage("You do not have authority to access this resources").setDetails(details);

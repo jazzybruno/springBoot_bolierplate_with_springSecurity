@@ -174,9 +174,10 @@ public class UserServiceImpl implements UserService {
                     String email = userSecurityDetails.getUsername();
                     Long userId = userAuthority.getUserId();
                     String role = userAuthority.getAuthority();
+                    System.out.println(userId);
 
                     // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
-                    String token = jwtUtils.createToken(userId , userLoginDTO.getEmail() , role);
+                    String token = jwtUtils.createToken(user.get().getUser_id(), userLoginDTO.getEmail() , role);
                     return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
                     }else{
                     return ResponseEntity.status(401).body(new ApiResponse(false , "Failed to Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
