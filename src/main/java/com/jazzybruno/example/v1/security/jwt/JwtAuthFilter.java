@@ -1,5 +1,6 @@
 package com.jazzybruno.example.v1.security.jwt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jazzybruno.example.v1.exceptions.JWTVerificationException;
 import com.jazzybruno.example.v1.exceptions.TokenException;
@@ -28,6 +29,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserSecurityDetailsService userSecurityDetailsService;
     private final JwtUtils jwtUtils;
 
+    public void throwErrors(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain , Exception e) throws IOException, ServletException {
+        TokenException exception = new TokenException(e.getMessage());
+
+        // the repsonse type and status
+        response.setStatus(exception.getResponseEntity().getStatusCodeValue());
+        response.setContentType("application/json");
+
+        // set a new response object as a json one
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.getWriter().write(objectMapper.writeValueAsString(exception.getResponseEntity().getBody()));
+
+        // exit the filter chain
+        filterChain.doFilter(request, response);
+        return;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
@@ -44,19 +61,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             jwtUserInfo = jwtUtils.decodeToken(jwtToken);
         } catch (JWTVerificationException e) {
-            TokenException exception = new TokenException(e.getMessage());
-
-            // the repsonse type and status
-            response.setStatus(exception.getResponseEntity().getStatusCodeValue());
-            response.setContentType("application/json");
-
-            // set a new response object as a json one
-            ObjectMapper objectMapper = new ObjectMapper();
-            response.getWriter().write(objectMapper.writeValueAsString(exception.getResponseEntity().getBody()));
-
-            // exit the filter chain
-            filterChain.doFilter(request, response);
-            return;
+            throwErrors(request , response , filterChain , e);
         }
 
         if (jwtUserInfo.getEmail() != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -72,20 +77,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
                 filterChain.doFilter(request, response);
             } catch (UsernameNotFoundException e) {
-                TokenException exception = new TokenException(e.getMessage());
-
-                // the repsonse type and status
-                response.setStatus(exception.getResponseEntity().getStatusCodeValue());
-                response.setContentType("application/json");
-
-                // set a new response object as a json one
-                ObjectMapper objectMapper = new ObjectMapper();
-                response.getWriter().write(objectMapper.writeValueAsString(exception.getResponseEntity().getBody()));
-
-                // exit the filter chain
-                filterChain.doFilter(request, response);
+                throwErrors(request , response , filterChain , e);
             }
-
         }
     }
 }
