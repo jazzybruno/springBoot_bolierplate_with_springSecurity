@@ -35,7 +35,6 @@ public class User {
     private Role role;
 
     @Column
-    @NotNull
     private Date lastLogin;
     @NotNull
     private String password;

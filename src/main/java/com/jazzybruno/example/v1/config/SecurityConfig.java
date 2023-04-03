@@ -1,5 +1,6 @@
 package com.jazzybruno.example.v1.config;
 
+import com.jazzybruno.example.v1.dto.responses.CustomAuthError;
 import com.jazzybruno.example.v1.security.jwt.JwtAuthFilter;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserSecurityDetailsService userSecurityDetailsService;
+    private final CustomAuthError customAuthError;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
                 .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(customAuthError)
+                .and()
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST,  "/api/v1/users/login" , "/api/v1/users/create")
                 .permitAll()
