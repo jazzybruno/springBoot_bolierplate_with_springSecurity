@@ -1,6 +1,7 @@
     package com.jazzybruno.example.v1.serviceImpls;
 
 import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
+import com.jazzybruno.example.v1.dto.responses.LoginResponse;
 import com.jazzybruno.example.v1.dto.responses.UserDTOMapper;
 import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
 import com.jazzybruno.example.v1.exceptions.LoginFailedException;
@@ -174,11 +175,9 @@ public class UserServiceImpl implements UserService {
                     String email = userSecurityDetails.getUsername();
                     Long userId = userAuthority.getUserId();
                     String role = userAuthority.getAuthority();
-                    System.out.println(userId);
-
                     // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
                     String token = jwtUtils.createToken(user.get().getUser_id(), userLoginDTO.getEmail() , role);
-                    return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
+                    return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , new LoginResponse(token , user.map(userDTOMapper).get())));
                     }else{
                     return ResponseEntity.status(401).body(new ApiResponse(false , "Failed to Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
                 }
