@@ -62,15 +62,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(jwtUserInfo.getEmail());
 
                 if(jwtUtils.isTokenValid(jwtToken , userSecurityDetails)){
-                    System.out.println("I have reached the username anf password authentication filter");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userSecurityDetails , jwtToken , userSecurityDetails.getGrantedAuthorities()
                     );
-                    System.out.println("I have exited the username anf password authentication filter");
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }else{
-                    System.out.println("The jwt token is not valid!!!");
                 }
             }
             filterChain.doFilter(request , response);

@@ -19,6 +19,7 @@ public class UserSecurityDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
         if(userOptional.isPresent()){
+            System.out.println(userOptional.get().getUser_id());
             return new UserSecurityDetails(userOptional.get());
         }else{
         throw new UsernameNotFoundException("" + email + " was not found");

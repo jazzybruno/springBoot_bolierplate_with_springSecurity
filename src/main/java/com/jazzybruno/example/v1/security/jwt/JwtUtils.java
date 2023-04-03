@@ -46,7 +46,15 @@ public class JwtUtils {
     }
 
     public Boolean isTokenExpired(String token){
-        return extractExpiration(token).before(new Date());
+        Date expirationDate = extractExpiration(token);
+        System.out.println("The expiration date is: " + expirationDate);
+        Date currentTime  = new Date(System.currentTimeMillis());
+        System.out.println("The current time is : " + currentTime);
+        if(currentTime.before(expirationDate)){
+            return false;
+        }else{
+            return true;
+        }
     }
 
         public String createToken(Long userId , String email , String role){
