@@ -161,34 +161,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<ApiResponse> authenticateUser(UserLoginDTO userLoginDTO) throws BadCredentialsException , LoginFailedException{
-        try {
             Optional<User> user = userRepository.findUserByEmail(userLoginDTO.getEmail());
             if(user.isPresent()){
                 Hash hash = new Hash();
                 if(hash.isTheSame(userLoginDTO.getPassword() , user.get().getPassword())){
 
                     // do the login stuff as usual
+                    UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
+                    List<GrantedAuthority> grantedAuthorities = userSecurityDetails.grantedAuthorities;
+                    System.out.println("The granted authorities: "  +  grantedAuthorities.get(0));
+                    UserAuthority userAuthority = (UserAuthority) grantedAuthorities.get(0);
+                    String email = userSecurityDetails.getUsername();
+                    Long userId = userAuthority.getUserId();
+                    String role = userAuthority.getAuthority();
+
+                    // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
+                    String token = jwtUtils.createToken(userId , userLoginDTO.getEmail() , role);
+                    return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
                     }else{
-                    return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
+                    return ResponseEntity.status(401).body(new ApiResponse(false , "Failed to Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
                 }
             }else{
-                return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
+                return ResponseEntity.status(401).body(new ApiResponse(false , "Failed to login" , new LoginFailedException("User does not exist!!").getMessage()));
             }
-            UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
-            List<GrantedAuthority> grantedAuthorities = userSecurityDetails.grantedAuthorities;
-            System.out.println("The granted authorities: "  +  grantedAuthorities.get(0));
-            UserAuthority userAuthority = (UserAuthority) grantedAuthorities.get(0);
-            String email = userSecurityDetails.getUsername();
-            Long userId = userAuthority.getUserId();
-            String role = userAuthority.getAuthority();
-
-            // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
-            String token = jwtUtils.createToken(userId , userLoginDTO.getEmail() , role);
-            return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , token));
-        } catch (BadCredentialsException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(401).body(new ApiResponse(false , "Failed Login" , new LoginFailedException("Incorrect Email or password").getMessage()));
-        }
-
         }
 }
