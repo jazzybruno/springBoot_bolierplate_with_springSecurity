@@ -13,4 +13,5 @@ public interface UserService {
     public ResponseEntity<ApiResponse> updateUser(Long user_id ,  CreateUserDTO createUserDTO) throws Exception;
     ResponseEntity<ApiResponse> deleteUser(Long user_id) throws Exception;
     ResponseEntity<ApiResponse> authenticateUser(UserLoginDTO userLoginDTO) throws Exception;
+    ResponseEntity<ApiResponse> updateUserRole(Long user_id , Long role_id) throws Exception;
 }

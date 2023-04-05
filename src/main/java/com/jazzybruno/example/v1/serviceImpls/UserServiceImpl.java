@@ -18,6 +18,7 @@ import com.jazzybruno.example.v1.services.UserService;
 import com.jazzybruno.example.v1.utils.Hash;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final UserSecurityDetailsService userSecurityDetailsService;
     private final JwtUtils jwtUtils;
 
+    @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<ApiResponse> getAllUsers() throws Exception{
       try {
           List<User> users = userRepository.findAll();
@@ -127,6 +129,7 @@ public class UserServiceImpl implements UserService {
         user.get().setPassword(createUserDTO.getPassword());
     }
 
+    @PreAuthorize("#user_id ==  authentication.principal.grantedAuthorities[0].userId or hasAuthority('Admin')")
     @Transactional
     public ResponseEntity<ApiResponse> updateUser(Long user_id ,  CreateUserDTO createUserDTO) throws Exception {
         if (userRepository.existsById(user_id)) {
@@ -145,6 +148,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @PreAuthorize("#user_id ==  authentication.principal.grantedAuthorities[0].userId or hasAuthority('Admin')")
     public ResponseEntity<ApiResponse> deleteUser(Long user_id) throws Exception{
         if (userRepository.existsById(user_id)) {
             Optional<User> user = userRepository.findById(user_id);
@@ -189,4 +193,30 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.status(401).body(new ApiResponse(false , "Failed to login" , new LoginFailedException("User does not exist!!").getMessage()));
             }
         }
+
+    public ResponseEntity<ApiResponse> updateUserRole(Long user_id , Long role_id) throws Exception{
+        if(userRepository.existsById(user_id)){
+            Optional<User> user = userRepository.findById(user_id);
+            if(roleRepository.existsById(role_id)){
+                Role role = roleRepository.findById(role_id).get();
+                user.get().setRole(role);
+                return ResponseEntity.ok().body(new ApiResponse(
+                        true,
+                        "Successfully updated the user role",
+                        user.map(userDTOMapper)
+                ));
+            }else{
+                return ResponseEntity.status(404).body(new ApiResponse(
+                        false,
+                        "The role with the id:" + user_id + " does not exist try 1,2,3,4"
+                ));
+            }
+        }else{
+            return ResponseEntity.status(404).body(new ApiResponse(
+                    false,
+                    "The user with the id:" + user_id + " does not exist"
+            ));
+        }
+    }
+
 }
