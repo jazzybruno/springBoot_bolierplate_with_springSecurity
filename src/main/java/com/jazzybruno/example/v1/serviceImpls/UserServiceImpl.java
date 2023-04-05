@@ -1,6 +1,7 @@
     package com.jazzybruno.example.v1.serviceImpls;
 
 import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
+import com.jazzybruno.example.v1.dto.requests.UpdateRoleDTO;
 import com.jazzybruno.example.v1.dto.responses.LoginResponse;
 import com.jazzybruno.example.v1.dto.responses.UserDTOMapper;
 import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService {
       }
     }
 
+    @PreAuthorize("#user_id ==  authentication.principal.grantedAuthorities[0].userId or hasAuthority('Admin')")
     public ResponseEntity<ApiResponse> getUserById(Long user_id) throws Exception{
         if(userRepository.existsById(user_id)){
             try {
@@ -194,11 +196,14 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-    public ResponseEntity<ApiResponse> updateUserRole(Long user_id , Long role_id) throws Exception{
-        if(userRepository.existsById(user_id)){
-            Optional<User> user = userRepository.findById(user_id);
-            if(roleRepository.existsById(role_id)){
-                Role role = roleRepository.findById(role_id).get();
+
+    @PreAuthorize("hasAuthority('Admin')")
+    @Transactional
+    public ResponseEntity<ApiResponse> updateUserRole(UpdateRoleDTO updateRoleDTO) throws Exception{
+        if(userRepository.existsById(updateRoleDTO.getUserId())){
+            Optional<User> user = userRepository.findById(updateRoleDTO.getUserId());
+            if(roleRepository.existsById(updateRoleDTO.getRoleId())){
+                Role role = roleRepository.findById(updateRoleDTO.getRoleId()).get();
                 user.get().setRole(role);
                 return ResponseEntity.ok().body(new ApiResponse(
                         true,
@@ -208,13 +213,13 @@ public class UserServiceImpl implements UserService {
             }else{
                 return ResponseEntity.status(404).body(new ApiResponse(
                         false,
-                        "The role with the id:" + user_id + " does not exist try 1,2,3,4"
+                        "The role with the id:" + updateRoleDTO.getRoleId() + " does not exist try 1,2,3,4"
                 ));
             }
         }else{
             return ResponseEntity.status(404).body(new ApiResponse(
                     false,
-                    "The user with the id:" + user_id + " does not exist"
+                    "The user with the id:" + updateRoleDTO.getUserId() + " does not exist"
             ));
         }
     }

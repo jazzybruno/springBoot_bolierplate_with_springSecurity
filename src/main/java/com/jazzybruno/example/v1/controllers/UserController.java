@@ -2,6 +2,7 @@ package com.jazzybruno.example.v1.controllers;
 
 
 import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
+import com.jazzybruno.example.v1.dto.requests.UpdateRoleDTO;
 import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
 import com.jazzybruno.example.v1.exceptions.LoginFailedException;
 import com.jazzybruno.example.v1.payload.ApiResponse;
@@ -45,5 +46,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> authenticateUser(@RequestBody UserLoginDTO userLoginDTO) throws BadCredentialsException , LoginFailedException {
         return userService.authenticateUser(userLoginDTO);
+    }
+
+    @PutMapping("/role")
+    public ResponseEntity<ApiResponse> updateUserRole(@RequestBody UpdateRoleDTO updateRoleDTO) throws Exception{
+        return userService.updateUserRole(updateRoleDTO);
     }
 }
