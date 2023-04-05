@@ -173,14 +173,13 @@ public class UserServiceImpl implements UserService {
                     UserSecurityDetails userSecurityDetails = (UserSecurityDetails) userSecurityDetailsService.loadUserByUsername(userLoginDTO.getEmail());
                     List<GrantedAuthority> grantedAuthorities = userSecurityDetails.grantedAuthorities;
                     UserAuthority userAuthority = (UserAuthority) grantedAuthorities.get(0);
-                    String email = userSecurityDetails.getUsername();
-                    Long userId = userAuthority.getUserId();
                     String role = userAuthority.getAuthority();
                     //updating the last login information
                     User userObject = user.get();
                     userObject.setLastLogin(new Date());
                     userRepository.save(userObject);
-                    // Todo Add the last login parameter to the table and update it here to keep track of the login userSecurityDetails
+                    // Todo Add the last login parameter to the table and update it here to keep track of
+                    //  the login userSecurityDetails
                     String token = jwtUtils.createToken(user.get().getUser_id(), userLoginDTO.getEmail() , role);
                     return ResponseEntity.ok().body(new ApiResponse(true , "Success in login" , new LoginResponse(token , user.map(userDTOMapper).get())));
                     }else{
