@@ -3,6 +3,7 @@ package com.jazzybruno.example.v1.security.jwt;
 import com.jazzybruno.example.v1.exceptions.JWTVerificationException;
 import com.jazzybruno.example.v1.security.user.UserSecurityDetails;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Calendar;
@@ -18,7 +19,9 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtils {
-    private String jwtSecretKey = "secret@OK";
+
+    @Value("${jwt.secret}")
+    private String jwtSecretKey;
     private static final String CLAIM_KEY_USER_ID = "userId";
     private static final String CLAIM_KEY_EMAIL = "email";
     private static final String CLAIM_KEY_ROLE = "role";
