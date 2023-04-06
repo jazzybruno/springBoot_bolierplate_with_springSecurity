@@ -1,6 +1,7 @@
     package com.jazzybruno.example.v1.serviceImpls;
 
 import com.jazzybruno.example.v1.dto.requests.CreateUserDTO;
+import com.jazzybruno.example.v1.dto.requests.UpdateRoleDTO;
 import com.jazzybruno.example.v1.dto.responses.LoginResponse;
 import com.jazzybruno.example.v1.dto.responses.UserDTOMapper;
 import com.jazzybruno.example.v1.dto.requests.UserLoginDTO;
@@ -18,6 +19,7 @@ import com.jazzybruno.example.v1.services.UserService;
 import com.jazzybruno.example.v1.utils.Hash;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
     private final UserSecurityDetailsService userSecurityDetailsService;
     private final JwtUtils jwtUtils;
 
+    @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<ApiResponse> getAllUsers() throws Exception{
       try {
           List<User> users = userRepository.findAll();
@@ -59,6 +62,7 @@ public class UserServiceImpl implements UserService {
       }
     }
 
+    @PreAuthorize("hasAuthority('Admin') or #user_id == authentication.principal.grantedAuthorities[0].userId")
     public ResponseEntity<ApiResponse> getUserById(Long user_id) throws Exception{
         if(userRepository.existsById(user_id)){
             try {
@@ -127,6 +131,7 @@ public class UserServiceImpl implements UserService {
         user.get().setPassword(createUserDTO.getPassword());
     }
 
+    @PreAuthorize("hasAuthority('Admin') or #user_id == authentication.principal.grantedAuthorities[0].userId")
     @Transactional
     public ResponseEntity<ApiResponse> updateUser(Long user_id ,  CreateUserDTO createUserDTO) throws Exception {
         if (userRepository.existsById(user_id)) {
@@ -145,6 +150,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @PreAuthorize("hasAuthority('Admin') or #user_id == authentication.principal.grantedAuthorities[0].userId")
     public ResponseEntity<ApiResponse> deleteUser(Long user_id) throws Exception{
         if (userRepository.existsById(user_id)) {
             Optional<User> user = userRepository.findById(user_id);
@@ -189,4 +195,34 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.status(401).body(new ApiResponse(false , "Failed to login" , new LoginFailedException("User does not exist!!").getMessage()));
             }
         }
+
+
+
+    @PreAuthorize("hasAuthority('Admin')")
+    @Transactional
+    public ResponseEntity<ApiResponse> updateUserRole(UpdateRoleDTO updateRoleDTO) throws Exception{
+        if(userRepository.existsById(updateRoleDTO.getUserId())){
+            Optional<User> user = userRepository.findById(updateRoleDTO.getUserId());
+            if(roleRepository.existsById(updateRoleDTO.getRoleId())){
+                Role role = roleRepository.findById(updateRoleDTO.getRoleId()).get();
+                user.get().setRole(role);
+                return ResponseEntity.ok().body(new ApiResponse(
+                        true,
+                        "Successfully updated the user role",
+                        user.map(userDTOMapper)
+                ));
+            }else{
+                return ResponseEntity.status(404).body(new ApiResponse(
+                        false,
+                        "The role with the id:" + updateRoleDTO.getRoleId() + " does not exist try 1,2,3,4"
+                ));
+            }
+        }else{
+            return ResponseEntity.status(404).body(new ApiResponse(
+                    false,
+                    "The user with the id:" + updateRoleDTO.getUserId() + " does not exist"
+            ));
+        }
+    }
+
 }
