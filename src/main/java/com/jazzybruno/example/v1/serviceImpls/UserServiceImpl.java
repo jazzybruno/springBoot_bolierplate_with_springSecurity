@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
       }
     }
 
-    @PreAuthorize("#user_id ==  authentication.principal.grantedAuthorities[0].userId or hasAuthority('Admin')")
+    @PreAuthorize("hasAuthority('Admin') or #user_id == authentication.principal.grantedAuthorities[0].userId")
     public ResponseEntity<ApiResponse> getUserById(Long user_id) throws Exception{
         if(userRepository.existsById(user_id)){
             try {
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
         user.get().setPassword(createUserDTO.getPassword());
     }
 
-    @PreAuthorize("#user_id ==  authentication.principal.grantedAuthorities[0].userId or hasAuthority('Admin')")
+    @PreAuthorize("hasAuthority('Admin') or #user_id == authentication.principal.grantedAuthorities[0].userId")
     @Transactional
     public ResponseEntity<ApiResponse> updateUser(Long user_id ,  CreateUserDTO createUserDTO) throws Exception {
         if (userRepository.existsById(user_id)) {
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @PreAuthorize("#user_id ==  authentication.principal.grantedAuthorities[0].userId or hasAuthority('Admin')")
+    @PreAuthorize("hasAuthority('Admin') or #user_id == authentication.principal.grantedAuthorities[0].userId")
     public ResponseEntity<ApiResponse> deleteUser(Long user_id) throws Exception{
         if (userRepository.existsById(user_id)) {
             Optional<User> user = userRepository.findById(user_id);
@@ -195,6 +195,7 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.status(401).body(new ApiResponse(false , "Failed to login" , new LoginFailedException("User does not exist!!").getMessage()));
             }
         }
+
 
 
     @PreAuthorize("hasAuthority('Admin')")
