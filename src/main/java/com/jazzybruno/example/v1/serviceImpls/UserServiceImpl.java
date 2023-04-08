@@ -93,6 +93,7 @@ public class UserServiceImpl implements UserService {
                      createUserDTO.getEmail(),
                      createUserDTO.getUsername(),
                      createUserDTO.getNational_id(),
+                     createUserDTO.getGender(),
                      createUserDTO.getPassword()
              );
 
@@ -100,6 +101,12 @@ public class UserServiceImpl implements UserService {
              Optional<Role> roleOptional = roleRepository.findById(id);
              user.setRole(roleOptional.get());
 
+             // setting a default avatar
+             if(user.getGender().equals("Male")){
+                 user.setGender("https://www.google.com/imgres?imgurl=https%3A%2F%2Fus.123rf.com%2F450wm%2Fyupiramos%2Fyupiramos1610%2Fyupiramos161007352%2F64369849-young-man-avatar-isolated-icon-vector-illustration-design.jpg&tbnid=ilUgygO9TcHl4M&vet=12ahUKEwj5x5G_oZv-AhVlmycCHTAsBCkQMygKegUIARDdAQ..i&imgrefurl=https%3A%2F%2Fwww.123rf.com%2Fphoto_64369849_young-man-avatar-isolated-icon-vector-illustration-design.html&docid=_AAMeHi1dhj_1M&w=450&h=450&q=a%20man%20avatar&ved=2ahUKEwj5x5G_oZv-AhVlmycCHTAsBCkQMygKegUIARDdAQ");
+             }else{
+                 user.setGender("data:image/png;base64,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");
+             }
              Hash hash = new Hash();
              user.setPassword(hash.hashPassword(user.getPassword()));
              user.setLastLogin(null);

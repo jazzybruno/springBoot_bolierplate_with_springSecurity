@@ -36,13 +36,22 @@ public class User {
 
     @Column
     private Date lastLogin;
+
+    @Column
+    @NotNull
+    private String gender;
+
+    @Column
+    @NotNull
+    private String profilePicture;
     @NotNull
     private String password;
 
-    public User(String email, String username, String national_id, String password) {
+    public User(String email, String username, String national_id, String profilePicture ,String password) {
         this.email = email;
         this.username = username;
         this.national_id = national_id;
         this.password = password;
+        this.profilePicture = profilePicture;
     }
 }
