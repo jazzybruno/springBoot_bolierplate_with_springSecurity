@@ -16,6 +16,7 @@ import javax.management.relation.Role;
 public class CreateUserDTO {
     private String email;
     private String username;
+    private String Gender;
     private String national_id;
     private String password;
 }
