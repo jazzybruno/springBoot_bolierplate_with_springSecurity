@@ -58,4 +58,9 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateUserRole(@RequestBody UpdateRoleDTO updateRoleDTO) throws Exception{
         return userService.updateUserRole(updateRoleDTO);
     }
+
+    @PutMapping("/changePass/{user_id}")
+    public ResponseEntity<ApiResponse> updatePassword(@PathVariable Long user_id ,   @RequestBody String newPassword) throws Exception{
+        return userService.updatePassword( user_id , newPassword);
+    }
 }
