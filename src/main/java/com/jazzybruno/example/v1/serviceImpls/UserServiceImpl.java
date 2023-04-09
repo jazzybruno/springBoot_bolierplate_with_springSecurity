@@ -24,11 +24,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -233,13 +235,26 @@ public class UserServiceImpl implements UserService {
     }
 
     public ResponseEntity<ApiResponse> updatePassword(Long user_id , String newPassword) throws Exception{
-        Optional<User> optionalUser = userRepository.findById(user_id);
-        if(optionalUser.isPresent()){
-
-        }else{
-            return ResponseEntity.status(404).body(new ApiResponse(
+        try {
+            Optional<User> optionalUser = userRepository.findById(user_id);
+            if(optionalUser.isPresent()){
+                Hash hash = new Hash();
+                String hashedPassword = hash.hashPassword(newPassword);
+                optionalUser.get().setPassword(hashedPassword);
+                return ResponseEntity.status(200).body(new ApiResponse(
+                        true,
+                        "Password was reset successfully"
+                ));
+            }else{
+                return ResponseEntity.status(404).body(new ApiResponse(
+                        false,
+                        "The user with the id:" + user_id + " does not exist"
+                ));
+            }
+        }catch (RuntimeException e){
+            return ResponseEntity.status(500).body(new ApiResponse(
                     false,
-                    "The user with the id:" + user_id + " does not exist"
+                "Failed!!"
             ));
         }
     }
