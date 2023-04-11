@@ -63,4 +63,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> updatePassword(@PathVariable Long user_id ,   @RequestBody String newPassword) throws Exception{
         return userService.updatePassword( user_id , newPassword);
     }
+
+    public ResponseEntity<String> uploadPhoto(){
+        return ResponseEntity.ok().body("Function to upload a picture");
+    }
 }
